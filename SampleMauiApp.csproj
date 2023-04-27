@@ -1,0 +1,103 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net7.0-android</TargetFrameworks>
+		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net6.0-windows10.0.19041.0</TargetFrameworks> -->
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net6.0-tizen</TargetFrameworks> -->
+		<OutputType>Exe</OutputType>
+		<RootNamespace>SampleMauiApp</RootNamespace>
+		<UseMaui>false</UseMaui>
+		<SingleProject>true</SingleProject>
+		<IsPackable>false</IsPackable>
+		<!--
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		-->
+		<!--
+		<ImplicitUsings>enable</ImplicitUsings>
+		-->
+
+		<!-- Display name -->
+		<ApplicationTitle>SampleMauiApp</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.samplemauiapp</ApplicationId>
+		<ApplicationIdGuid>76ba36b5-e212-4b24-a19c-ef4f971fb00b</ApplicationIdGuid>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+        
+        <MauiPath>$(MSBuildProjectDirectory)\..\..\maui\</MauiPath>
+        <_MauiBuildTasksLocation>$(MauiPath).nuspec\</_MauiBuildTasksLocation>
+        
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<MonoAndroidResourcePrefix>Platforms\Android\Resources</MonoAndroidResourcePrefix>
+		<AndroidManifest>Platforms\Android\AndroidManifest.xml</AndroidManifest>
+		<TargetFrameworkVersion>33</TargetFrameworkVersion>
+	</PropertyGroup>
+  
+    <ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration" />
+		<PackageReference Include="Microsoft.Extensions.Logging" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <ProjectReference Include="$(MauiPath)src\BlazorWebView\src\Maui\Microsoft.AspNetCore.Components.WebView.Maui.csproj" />
+        <ProjectReference Include="$(MauiPath)src\Essentials\src\Essentials.csproj" />
+        <ProjectReference Include="$(MauiPath)src\Controls\src\Core\Controls.Core.csproj" />
+        <ProjectReference Include="$(MauiPath)src\Controls\src\Xaml\Controls.Xaml.csproj" />
+        <ProjectReference Include="$(MauiPath)src\Core\src\Core.csproj" />
+        <ProjectReference Include="$(MauiPath)src\Compatibility\Core\src\Compatibility.csproj" />
+        <ProjectReference Include="$(MauiPath)src\Controls\Foldable\src\Controls.Foldable.csproj" />
+        <ProjectReference Include="$(MauiPath)src\Controls\Maps\src\Controls.Maps.csproj" />
+    </ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="App.xaml.cs">
+			<DependentUpon>App.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="AppShell.xaml.cs">
+			<DependentUpon>AppShell.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="MainPage.xaml.cs">
+			<DependentUpon>MainPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="MauiProgram.cs" />
+	</ItemGroup>
+
+	<Import Project="$(MauiPath)src\Maui.InTree.props" />
+
+	<ItemGroup Condition="$(TargetPlatformIdentifier) == 'android'">
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/*/*" />
+		<AndroidResource Remove="$(MonoAndroidResourcePrefix)/raw/.*" />
+		<AndroidResource Update="$(MonoAndroidResourcePrefix)/raw/*" />
+		<AndroidAsset Include="$(MonoAndroidAssetsPrefix)/**/*" Exclude="$(MonoAndroidAssetsPrefix)/**/.*/**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+</Project>
